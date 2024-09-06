@@ -1,0 +1,120 @@
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+serv_obj=Service()
+driver=webdriver.Chrome()
+
+#1. Test Scenario 1: User Login
+#○ Description: Automate the login functionality of the application.
+#○ Steps:
+#1. Navigate to the login page.
+#2. Enter a valid username and password.
+#3. Click on the "Login" button.
+#4. Verify successful login by checking the presence of a user-specific element.
+
+#1. Navigate to the login page.
+driver.get("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+driver.maximize_window()
+time.sleep(4)
+
+#2. Enter a valid username and password.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div/div[1]/div/div[2]/div[2]/form/div[1]/div/div[2]/input").send_keys("Admin")
+time.sleep(4)
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div/div[1]/div/div[2]/div[2]/form/div[2]/div/div[2]/input").send_keys("admin123")
+time.sleep(4)
+
+#3. Click on the "Login" button.
+#4. Verify successful login by checking the presence of a user-specific element.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div/div[1]/div/div[2]/div[2]/form/div[3]/button").click()
+time.sleep(4)
+
+#2. Test Scenario 2: User Management Search
+#○ Description: Automate the search functionality.
+#○ Steps:
+#1. Ensure the user is logged in.
+#2. Search for a user (e.g., "Bhuvaneshwar") using the search bar.
+#3. Verify that search results are displayed and contain the search keyword.
+#4. Validate that the user details page can be opened from the search results.
+
+#1. Ensure the user is logged in.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[1]/aside/nav/div[2]/ul/li[1]/a/span").click()
+time.sleep(4)
+
+#2. Search for a user (e.g.,"Bhuvaneshwar") using the search bar.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[1]/div/div[2]/input").send_keys("Bhuvaneshwar")
+time.sleep(4)
+
+#3. Verify that search results are displayed and contain the search keyword.
+#4. Validate that the user details page can be opened from the search results.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[2]/button[2]").click()
+time.sleep(4)
+
+#3. Test Scenario 3: Add to new user
+#○ Description: Automate the process of adding a user.
+#○ Steps:
+#1. Search for a user and navigate to its details page.
+#2. Add the user.
+#1. User Role - Admin
+#2. Employee Name - {{name}}
+#3. Status - Enable
+#4. Username - {{usernmae}}
+#5. Password and Confirm Pass - Qwerty@123
+
+#1. Search for a user and navigate to its details page.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div[2]/div[1]/button").click()
+time.sleep(2)
+
+#2. Add the user.
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div/form/div[1]/div/div[1]/div/div[2]/div/div/div[1]").click()
+time.sleep(2)
+
+#1. User Role - Admin
+admin=driver.find_elements(By.XPATH,"//div[@class='oxd-select-text--after']/i")
+for i in admin:
+    if i.text=="Admin":
+        i.click()
+
+#2. Employee Name - {{name}}
+driver.find_element(By.XPATH,"//input[@placeholder='Type for hints...']").click()
+hints=driver.find_elements(By.XPATH,"//div[@id='oxd-autocomplete-text-input--after']")
+for i in hints:
+    if i.text =="Ranga Akunuri":
+        i.click()
+
+#3. Status - Enabled
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div/form/div[1]/div/div[3]/div/div[2]/div/div").click()
+enabled=driver.find_elements(By.XPATH,"//div[@class='oxd-select-text--after']/i")
+for i in enabled:
+    if i.text=="Enabled":
+        i.click()
+
+#4. Username - {{usernmae}}
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div/form/div[1]/div/div[4]/div/div[2]/input").send_keys("Vikash")
+
+#5. Password - Qwerty@123
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div/form/div[2]/div/div[1]/div/div[2]/input").send_keys("Qwerty@123")
+
+#6. Confirm Password - Qwerty@123
+driver.find_element(By.XPATH,"//*[@id='app']/div[1]/div[2]/div[2]/div/div/form/div[2]/div/div[2]/div/div[2]/input").send_keys("Qwerty@123")
+
+#Test Scenario 4: API Testing
+#○ Description: Test the API endpoint that provides product details.
+#○ Steps:
+#1. Send a GET request to the
+#https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/admin/users?limit=50&offset=0&sortField=u.userName&sortOrder=ASC
+#endpoint.
+#2. Verify that the response status code is 200.
+#3. Validate the structure of the response JSON, ensuring it contains user
+#details like username, role, status, etc.
+#4. Verify the correctness of the data against the UI.
+
+#1. Send a GET request to the
+#https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/admin/users?limit=50&offset=0&sortField=u.userName&sortOrder=ASC
+#endpoint.
+import requests
+url="https://opensource-demo.orangehrmlive.com/web/index.php/api/v2/admin/users?limit=50&offset=0&sortField=u.userName&sortOrder=ASC"
+#send a GET request
+response=requests.get(url)
+print(response)
+driver.quit()
